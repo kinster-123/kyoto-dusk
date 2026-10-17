@@ -1,0 +1,129 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>京都暮色 · 符卡夜行 — ASCII Spellcard Shooter</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;height:100%;background:#090914;color:#eee1ce;font-family:'Courier New',Consolas,monospace;overflow:hidden}body{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#241b31 0%,#090913 72%)}.shell{width:min(98vw,1500px);height:min(96dvh,880px);display:flex;flex-direction:column;gap:9px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:2px;opacity:.8}.top strong{color:#f6a8b0;font-weight:normal}.layout{flex:1;display:flex;gap:12px;min-height:0}.frame{position:relative;flex:1;min-width:0;border:1px solid #685268;box-shadow:0 0 0 1px #1c1a28 inset,0 14px 70px #0007;background:#170f24;overflow:hidden}.frame:before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;box-shadow:inset 0 0 90px #07061190}canvas{width:100%;height:100%;display:block;object-fit:contain;touch-action:none}.scan{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.15;background:repeating-linear-gradient(0deg,transparent 0 3px,#08061670 4px 5px)}.side{width:210px;border:1px solid #584657;background:#12101bd9;padding:19px 16px;display:flex;flex-direction:column;gap:22px}.tag{color:#ba8b9e;font-size:10px;letter-spacing:3px}.num{font-size:24px;color:#f8dfc3;margin-top:9px}.small{font-size:11px;color:#ae9cab;line-height:1.9}.life{font-size:23px;color:#ef9ba8;letter-spacing:5px}.meter{height:5px;background:#3a303f;margin-top:9px}.meter>div{height:100%;width:0;background:linear-gradient(90deg,#ac7899,#ffd0ba);transition:width .1s}.side .bottom{margin-top:auto;border-top:1px solid #4b3c4f;padding-top:18px}.key{display:inline-block;border:1px solid #655363;padding:1px 5px;color:#eed9cb;margin:1px}.overlay{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(90deg,#0b091dd9,#171021ba,#0b091dd9);padding:25px;gap:15px}.overlay.hide{display:none}.eyebrow{font-size:12px;letter-spacing:5px;color:#eaa4b8}.overlay h1{font-size:clamp(30px,5.5vw,70px);font-weight:normal;letter-spacing:.12em;line-height:1.05;margin:12px 0 6px;color:#ffe3cf;text-shadow:0 0 35px #c8738288}.subtitle{font-size:clamp(11px,1.4vw,17px);letter-spacing:4px;color:#f3adac}.overlay p{font-size:12px;line-height:2;color:#c2adbd;max-width:530px}.start{margin-top:17px;border:1px solid #f1b0a4;background:#bd7f8e21;color:#ffe0d1;font:13px monospace;letter-spacing:3px;padding:14px 26px;cursor:pointer}.start:hover{background:#b8788966}.hint{font-size:10px;opacity:.5;letter-spacing:2px}.mobile{display:none;position:absolute;bottom:12px;right:10px;z-index:5;gap:7px}.mobile button{border:1px solid #e5aec866;border-radius:40px;width:55px;height:55px;background:#0f0b20a9;color:#fbd0d7;font:11px monospace;touch-action:none}.footer{font-size:10px;color:#776b7b;display:flex;justify-content:space-between;letter-spacing:1px}.pause{position:absolute;top:9px;right:12px;z-index:5;background:#16101ca8;color:#ffe2d4;border:1px solid #8e6876;padding:5px 10px;cursor:pointer;font:11px monospace}@media(max-width:900px){.side{display:none}.shell{width:100vw;height:100dvh;padding:3px}.top{padding:3px;font-size:9px}.footer{display:none}.mobile{display:flex}.frame{border-color:#493b4a}}
+</style></head><body><div class="shell"><header class="top"><div><strong>●</strong> ASCII.REST / INSPIRED SCENE <span style="opacity:.4"> / </span> <strong>KYOTO // DUSK</strong></div><div>幻想符卡弹幕　<span style="color:#d9a5ac">✧</span>　符卡夜行 · 改进版</div></header><div class="layout"><section class="frame" id="frame"><canvas id="game" width="960" height="600" aria-label="京都暮色弹幕射击游戏"></canvas><div class="scan"></div><button class="pause" id="pause">Ⅱ PAUSE</button><div class="overlay" id="overlay"><div class="eyebrow">✦ SPELLCARDS IN THE FALLING PETALS ✦</div><h1 id="ovTitle">京都暮色</h1><div class="subtitle" id="ovSub">KYOTO / SPELLCARD NIGHT</div><p id="ovDesc">钟声落在古塔的檐角。<br>黄昏的妖灵顺着樱花雨而来。<br>在夜幕降临前，守住最后一束光。</p><button id="start" class="start">[ 启程 / START ]</button><div class="hint">WASD / 方向键移动 · SHIFT 低速精确移动 · Z / 空格射击 · X / C 清屏符咒 · P 暂停</div></div><div class="mobile"><button id="focusTouch">FOCUS</button><button id="bombTouch">BOMB</button></div></section><aside class="side"><div><div class="tag">SCORE / 得分</div><div class="num" id="score">00000000</div></div><div><div class="tag">LIFE / 残机</div><div class="life" id="life">♥ ♥ ♥</div></div><div><div class="tag">SPELL / 符咒</div><div class="num" id="bomb">✧ ✧ ✧</div></div><div><div class="tag">GRAZE / 擦弹</div><div class="num" id="graze">0000</div></div><div><div class="tag">STAGE / 关卡</div><div class="num" id="stage">01</div><div class="small" id="stageName">暮色来客</div></div><div><div class="tag">SPIRIT / 灵力</div><div class="meter"><div id="power"></div></div><div class="small" id="powerText">LEVEL 1</div></div><div class="bottom small">[WASD] MOVE<br>[SHIFT] FOCUS<br>[Z / SPACE] FIRE<br>[X / C] SPELL<br>[P] PAUSE<br><br><span style="color:#e4abb0">·</span> 擦弹可获得额外分数</div></aside></div><footer class="footer"><span>ASCII SPELLCARD SHOOTER · PROCEDURAL KYOTO SCENE</span><span>60 FPS GAMEPLAY / GENERATED CHARACTER ART</span></footer></div>
+<script>
+(()=>{'use strict';const cv=document.getElementById('game'),ctx=cv.getContext('2d'),W=960,H=600,overlay=document.getElementById('overlay');const $=id=>document.getElementById(id);let state='menu',time=0,last=0,score=0,lives=3,bombs=3,graze=0,power=0,stage=1,stageT=0,shake=0,flash=0,spawnT=0,enemyId=0,ambient=0;let enemies=[],bullets=[],shots=[],particles=[],items=[],rings=[],boss=null;let pl={x:480,y:500,r:5,inv:0,shotT:0};const keys={};let touch={on:false,x:480,y:500,focus:false,fire:true};const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const bg=document.createElement('canvas');bg.width=W;bg.height=H;const bc=bg.getContext('2d');let bgReady=false;
+function noise(a,b){let x=Math.sin(a*127.1+b*311.7)*43758.5453;return x-Math.floor(x)}function rgb(r,g,b){return `rgb(${r|0},${g|0},${b|0})`}function pagoda(x,y){let k=0;const cx=275,base=424;for(let level=0;level<5;level++){let top=base-level*45-34,width=120-level*14,roof=top-6;if(y>top+3&&y<top+37&&Math.abs(x-cx)<width*.37)return 1;if(Math.abs(y-roof)<6&&Math.abs(x-cx)<width*(.62)+(6-Math.abs(y-roof))*2)return 1;if(y>roof-12&&y<roof+3&&Math.abs(x-cx)<(y-(roof-14))*1.05)return 1;}if(Math.abs(x-cx)<4&&y>151&&y<180)return 1;if(Math.abs(x-cx)<15&&y>174&&y<182)return 1;return k}
+function branch(x,y){let segments=[[970,40,700,180,24],[960,125,740,237,17],[950,0,840,186,20],[910,105,629,106,13],[852,142,661,312,12],[759,189,586,228,8],[819,191,780,357,10],[963,253,819,393,13],[752,238,617,353,7],[802,124,635,26,8],[725,174,529,142,7]];for(let [a,b,c,d,w] of segments){let dx=c-a,dy=d-b,t=clamp(((x-a)*dx+(y-b)*dy)/(dx*dx+dy*dy),0,1),dist=Math.hypot(x-(a+t*dx),y-(b+t*dy));if(dist<w*(1-t*.60))return true}return false}
+let blossoms=[];for(let i=0;i<700;i++){let x=rand(508,1000),y=rand(0,405),n=noise(i,6);let eligible=((x>645&&y<340)||(x>780&&y<420)||(x>530&&y>75&&y<260));if(eligible&&noise(i,23)>.2)blossoms.push({x,y,r:rand(4,13),light:n});}
+function renderBg(){bc.fillStyle='#27182d';bc.fillRect(0,0,W,H);const chars='  .·:;+=*#%@',cw=8,ch=10;bc.font='11px monospace';bc.textBaseline='middle';let skyColors=[];for(let j=0;j<60;j++){let y=j*ch;let a=y/H,sky=[35+124*a,27+63*a,64+35*a];for(let i=0;i<120;i++){let x=i*cw,nd=noise(i,j),horizon=381+25*Math.sin(x/151)+14*Math.sin(x/73);let r=sky[0],g=sky[1],b=sky[2],dens=0.17+nd*.25;const moon=Math.hypot((x-493)*1.1,(y-178)*1.1);if(moon<41){r=250;g=191;b=154;dens=.65}else if(moon<64){r+=28;g+=16;dens+=.08}
+if(y>horizon){r=57+13*nd;g=39+9*nd;b=55+10*nd;dens=.52+nd*.22}if(y>483){r=29+nd*15;g=28+nd*10;b=37+nd*13;dens=.68}
+let tree=branch(x,y);if(tree){r=42;g=25;b=42;dens=.93}
+if(pagoda(x,y)){r=38;g=28;b=49;dens=.9;let window=(Math.abs(x-275)<11&&((y>334&&y<354)||(y>289&&y<304)||(y>246&&y<259)));if(window){r=238;g=138;b=103;dens=.88}}
+let lan=(x>110&&x<180&&y>436&&y<481)||(x>118&&x<171&&y>473&&y<540)||(x>95&&x<194&&y>421&&y<436)||(x>123&&x<163&&y>397&&y<420);if(lan){r=76;g=60;b=63;dens=.93;if(x>125&&x<167&&y>440&&y<466){r=255;g=173;b=112;dens=.94}}
+let blossom=false;for(let t=0;t<blossoms.length;t++){let z=blossoms[t],dx=x-z.x,dy=y-z.y;if(dx*dx+dy*dy<z.r*z.r){blossom=true;r=204+z.light*40;g=111+z.light*46;b=141+z.light*31;dens=.78+nd*.18;break;}}if(blossom&&nd>.82){r=255;g=207;b=203}
+if(y>510&&noise(i,j*2)>.84){r=135;g=73;b=83;dens=.5}
+const idx=clamp(Math.floor(dens*(chars.length-1)),0,chars.length-1);bc.fillStyle=rgb(r,g,b);bc.fillText(chars[idx],x,y+5)
+}}let glow=bc.createRadialGradient(145,451,6,145,451,125);glow.addColorStop(0,'#fcad6737');glow.addColorStop(1,'#fcad6700');bc.fillStyle=glow;bc.fillRect(0,330,300,260);bgReady=true}renderBg();
+const addP=(x,y,color,n=8,speed=110)=>{for(let i=0;i<n;i++){let a=rand(0,Math.PI*2),v=rand(speed*.25,speed);particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rand(.3,.75),max:.75,c:color,ch:Math.random()<.6?'*':'+'})}};
+function enemy(x,y,type='wisp',hp=9){let e={id:++enemyId,x,y,type,hp,max:hp,t:0,shoot:rand(.6,1.6),vx:rand(-20,20),baseX:x,phase:rand(0,7),r:type==='heavy'?23:17};enemies.push(e);return e}
+function eb(x,y,a,v=140,r=5,c='#f3a5bd',style='o'){bullets.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r,c,style,graze:false,age:0})}function radial(x,y,num,v,off=0,c='#efb4ba',style='o'){for(let k=0;k<num;k++)eb(x,y,off+k*2*Math.PI/num,v,4,c,style)}function aimed(x,y,n,spread,vel){let a=Math.atan2(pl.y-y,pl.x-x);for(let k=0;k<n;k++)eb(x,y,a+(k-(n-1)/2)*spread,vel,4.5,n>1?'#ffd5a2':'#f8a4af',n>1?'*':'o')}
+function shoot(){let n=power>=70?3:power>=25?2:1;shots.push({x:pl.x,y:pl.y-17,vx:0,vy:-720,damage:3});if(n>1){shots.push({x:pl.x-10,y:pl.y-12,vx:-55,vy:-660,damage:2},{x:pl.x+10,y:pl.y-12,vx:55,vy:-660,damage:2})}if(n>2)shots.push({x:pl.x-18,y:pl.y,vx:-110,vy:-640,damage:1},{x:pl.x+18,y:pl.y,vx:110,vy:-640,damage:1});}
+function useBomb(){if(state!=='play'||bombs<=0)return;bombs--;flash=.5;shake=12;let destroyed=bullets.length;bullets=[];rings.push({x:pl.x,y:pl.y,r:10,life:.85});addP(pl.x,pl.y,'#fff0c8',50,230);for(const e of enemies)e.hp-=15;if(boss)boss.hp-=95;score+=destroyed*20;updateUI()}
+function spawnPattern(){let t=stageT;if(stage===1){if(t<20){let x=rand(90,870);enemy(x,-20,Math.random()<.25?'heavy':'wisp',Math.random()<.25?21:10)}else if(t<34){let side=Math.random()<.5?110:850;for(let i=0;i<3;i++)enemy(side+(side<480?i*47:-i*47),-22-i*48,'wisp',9)}}else if(stage===2){let x=rand(95,865);enemy(x,-20,Math.random()<.38?'heavy':'wisp',18)}else{let x=rand(110,850);enemy(x,-20,'heavy',22)}}
+function newBoss(){enemies=[];boss={x:480,y:-80,tx:480,hp:stage===1?480:780,max:stage===1?480:780,t:0,shoot:0,phase:0,r:40};bullets=[];stageT=0;spellIndex=-1;spellTime=0;showBanner(stage===1?'第一幕 · 樱下怨灵':'终幕 · 黄昏之主')}
+let banner='',bannerTime=0,spellName='',spellTime=0,spellIndex=-1;function showBanner(t){banner=t;bannerTime=3}
+function bossShots(dt){
+ if(!boss)return;
+ const b=boss;b.t+=dt;b.y+=(119-b.y)*Math.min(1,dt*1.6);
+ b.x=480+Math.sin(b.t*.57)*148;
+ const cycle=stage===1?18:21;
+ const section=(b.t%cycle)/cycle;
+ const idx=section<.33?0:section<.68?1:2;
+ if(idx!==spellIndex){spellIndex=idx;b.shoot=0;spellTime=3.7;
+   spellName=(stage===1?['樱符「千重花吹雪」','霞符「山门回廊」','梦符「夕照残响」']:['夜符「五重塔的轮舞」','星符「黄昏万华镜」','终符「京都·永夜樱」'])[idx];
+   if(idx===0)bullets=bullets.filter(v=>v.y>250);}
+ b.shoot+=dt;
+ const difficulty=stage===1?1:1.34;
+ const interval=idx===0?.18:idx===1?.095:.28;
+ if(b.shoot<interval)return;
+ b.shoot=0;
+ if(idx===0){
+  // Two counter-rotating spirals forming petal chains.
+  const spin=b.t*(stage===1?1.16:1.53);
+  for(let arm=0;arm<(stage===1?4:6);arm++){
+   const a=spin+arm*Math.PI*2/(stage===1?4:6);
+   eb(b.x,b.y,a,105*difficulty,4.5,arm%2?'#f5aac7':'#ffe0ad','*');
+   eb(b.x,b.y,-spin+arm*Math.PI*2/(stage===1?4:6),149*difficulty,4,'#dbb7ff','o');
+  }
+ }else if(idx===1){
+  // Interleaved curtains with deliberate safe corridors.
+  const n=stage===1?9:13,turn=b.t*.65;
+  for(let i=0;i<n;i++){
+   const a=(i/n)*Math.PI*2+turn;
+   eb(b.x,b.y,a,100*difficulty+((i%3)*17),4.1,i%2?'#9cdbea':'#f7b9cc','o');
+  }
+  if(Math.floor(b.t*10)%8===0)aimed(b.x,b.y,stage===1?3:5,.19,134*difficulty);
+ }else{
+  // Dense rotating flower rings and timed aimed fan.
+  const n=stage===1?22:30;
+  radial(b.x,b.y,n,(stage===1?117:134),b.t*.31,'#ffd3a5','*');
+  radial(b.x,b.y,n,(stage===1?86:104),-b.t*.4,'#b5c9ff','o');
+  if(Math.floor(b.t*4)%2===0)aimed(b.x,b.y,stage===1?3:5,.21,176*difficulty);
+ }
+ if(bullets.length>1150)bullets.splice(0,bullets.length-1150);
+}
+function stageFlow(dt){stageT+=dt;spawnT-=dt;if(boss){bossShots(dt);if(boss.hp<=0){addP(boss.x,boss.y,'#ffe0b4',100,330);score+=stage*30000;bullets=[];boss=null;flash=.8;if(stage===1){stage=2;stageT=0;spawnT=2;showBanner('第二幕 · 夜樱未眠')}else win();}return}if(stage===1&&stageT>38){newBoss();return}if(stage===2&&stageT>43){newBoss();return}if(spawnT<=0){spawnPattern();spawnT=stage===1?rand(.8,1.4):rand(.62,1.05)}}
+function hurt(){if(pl.inv>0)return;lives--;pl.inv=2.5;shake=13;flash=.3;addP(pl.x,pl.y,'#ffd2d9',28,175);bullets=bullets.filter(b=>Math.hypot(b.x-pl.x,b.y-pl.y)>95);power=Math.max(0,power-16);updateUI();if(lives<=0)end(false)}
+function end(w){state='end';$('ovTitle').textContent=w?'暮色已安':'残樱如雨';$('ovSub').textContent=w?'THE DUSK IS SAVED':'THE FLOWERS FALL';$('ovDesc').innerHTML=`最终得分 <b style="color:#ffe0bc">${score.toLocaleString()}</b><br>擦弹 ${graze} 次 · ${w?'你守护了京都的黄昏。':'夜色尚未结束，再试一次。'}`;$('start').textContent='[ 再次启程 / RETRY ]';overlay.classList.remove('hide')}
+function win(){score+=lives*12000+bombs*7000;end(true)}
+function updateUI(){$('score').textContent=String(Math.floor(score)).padStart(8,'0');$('life').textContent='♥ '.repeat(Math.max(0,lives));$('bomb').textContent='✧ '.repeat(Math.max(0,bombs));$('graze').textContent=String(graze).padStart(4,'0');$('stage').textContent=String(stage).padStart(2,'0');$('stageName').textContent=stage===1?'暮色来客':'夜樱未眠';$('power').style.width=power+'%';$('powerText').textContent='LEVEL '+(power>=70?3:power>=25?2:1)}
+function reset(){state='play';overlay.classList.add('hide');score=0;lives=3;bombs=3;graze=0;power=0;stage=1;stageT=0;spawnT=2;enemies=[];bullets=[];shots=[];particles=[];items=[];rings=[];boss=null;spellIndex=-1;spellTime=0;pl={x:480,y:500,r:5,inv:2,shotT:0};showBanner('第一幕 · 暮色来客');updateUI()}
+function step(dt){time+=dt;ambient+=dt;if(state!=='play')return;let vx=0,vy=0;const focus=keys.Shift||touch.focus;const sp=focus?135:285;if(keys.ArrowLeft||keys.KeyA)vx--;if(keys.ArrowRight||keys.KeyD)vx++;if(keys.ArrowUp||keys.KeyW)vy--;if(keys.ArrowDown||keys.KeyS)vy++;if(touch.on){let dx=touch.x-pl.x,dy=touch.y-pl.y,dist=Math.hypot(dx,dy);if(dist>3){let v=Math.min(dist,sp*dt);pl.x+=dx/dist*v;pl.y+=dy/dist*v}}let m=Math.hypot(vx,vy)||1;pl.x=clamp(pl.x+vx/m*sp*dt,20,W-20);pl.y=clamp(pl.y+vy/m*sp*dt,40,H-18);pl.inv=Math.max(0,pl.inv-dt);pl.shotT-=dt;if((keys.KeyZ||keys.Space||touch.on||touch.fire)&&pl.shotT<=0){shoot();pl.shotT=focus?.105:.115}stageFlow(dt);
+for(const e of enemies){e.t+=dt;e.y+=dt*(e.type==='heavy'?47:68);e.x=e.baseX+Math.sin(e.t*1.8+e.phase)*(e.type==='heavy'?60:92);e.shoot-=dt;if(e.shoot<=0&&e.y>15&&e.y<430){if(e.type==='heavy'){radial(e.x,e.y,9,110,e.t/2,'#e6b1e3','o');aimed(e.x,e.y,3,.16,170)}else aimed(e.x,e.y,stage===1?2:3,.18,155);e.shoot=e.type==='heavy'?2.3:rand(1.7,2.6)}if(Math.hypot(e.x-pl.x,e.y-pl.y)<e.r+7)hurt()}
+enemies=enemies.filter(e=>e.y<680&&e.hp>0);for(const b of bullets){b.age+=dt;b.x+=b.vx*dt;b.y+=b.vy*dt;const dist=Math.hypot(b.x-pl.x,b.y-pl.y);if(dist<b.r+4){hurt();b.y=1000}else if(!b.graze&&dist<30){b.graze=true;graze++;score+=40;power=clamp(power+.08,0,100);addP(pl.x,pl.y,'#ffdfab',2,40)}}bullets=bullets.filter(b=>b.x>-40&&b.x<W+40&&b.y>-40&&b.y<H+40&&b.age<13);
+for(const s of shots){s.x+=s.vx*dt;s.y+=s.vy*dt;let target=boss&&Math.hypot(s.x-boss.x,s.y-boss.y)<boss.r?boss:enemies.find(e=>Math.hypot(s.x-e.x,s.y-e.y)<e.r+6);if(target){target.hp-=s.damage;s.y=-999;score+=15;if(Math.random()<.22)addP(s.x,s.y+18,'#fcd9b6',2,70);if(target!==boss&&target.hp<=0){score+=target.type==='heavy'?800:400;addP(target.x,target.y,'#ffb6c9',15,130);if(Math.random()<.42)items.push({x:target.x,y:target.y,vy:55,t:0})}}}shots=shots.filter(s=>s.y>-40&&s.x>-20&&s.x<W+20);
+for(const a of items){a.t+=dt;a.y+=dt*a.vy;const d=Math.hypot(a.x-pl.x,a.y-pl.y);if(d<115){a.x+=(pl.x-a.x)*dt*3;a.y+=(pl.y-a.y)*dt*3}if(d<16){a.y=900;power=clamp(power+5,0,100);score+=300}}items=items.filter(a=>a.y<650);
+for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.98;p.vy*=.98;p.life-=dt}particles=particles.filter(p=>p.life>0);for(const r of rings){r.r+=dt*850;r.life-=dt}rings=rings.filter(r=>r.life>0);shake=Math.max(0,shake-dt*36);flash=Math.max(0,flash-dt*2);bannerTime=Math.max(0,bannerTime-dt);spellTime=Math.max(0,spellTime-dt);updateUI()}
+const glyph=(char,x,y,size,color)=>{ctx.font=`${size}px 'Courier New',monospace`;ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(char,x,y)};
+function draw(){ctx.clearRect(0,0,W,H);ctx.save();if(shake>0)ctx.translate(rand(-shake,shake),rand(-shake,shake));ctx.drawImage(bg,0,0);ctx.fillStyle='#1b0b2733';ctx.fillRect(0,0,W,H);
+for(let i=0;i<33;i++){let z=i*18.13,px=(z*47+Math.sin(ambient*.3+i)*25)%W,py=(z*71+ambient*(13+i%6*6))%(H+30);glyph(i%3?'·':'✧',px,py,9+i%3*2,i%3?'#f7b6bf99':'#ffe5c2aa')}
+for(const a of items){glyph('◇',a.x,a.y,25,'#f9eab6');glyph('+',a.x,a.y,12,'#ffffff')}
+// Every moving actor is assembled from aligned ASCII glyph rows, not pictorial sprites.
+for(const e of enemies){
+ const c=e.type==='heavy'?'#d9b3f5':'#fac0c9',pulse=.75+.25*Math.sin(time*5+e.phase);
+ ctx.globalAlpha=pulse;
+ if(e.type==='heavy'){
+  glyph('.-^- .',e.x,e.y-22,17,c);glyph('<\\|//>',e.x,e.y-7,21,'#ffe1c8');
+  glyph('[ 0:0 ]',e.x,e.y+12,17,c);glyph(' / V \\',e.x,e.y+27,17,'#bca4e8');
+ }else{
+  glyph(' .--. ',e.x,e.y-14,17,c);glyph('< o >',e.x,e.y,20,'#ffe8d7');glyph(" '/\' ",e.x,e.y+15,18,c);
+ }
+ ctx.globalAlpha=1;
+}
+if(boss){
+ let b=boss;
+ ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.sin(time*.7)*.055);
+ glyph('       . * .       ',0,-56,25,'#f7d4c2');
+ glyph('     /\_^_/\     ',0,-38,26,'#f7b8d3');
+ glyph('  <<[ @ @ ]>>  ',0,-14,29,'#ffe4d2');
+ glyph('     | - |     ',0,11,27,'#e7b0dc');
+ glyph('  // /| |\ \\  ',0,38,26,'#eac0cd');
+ glyph('    /_| |_\    ',0,60,22,'#f7d8b9');
+ ctx.restore();
+ ctx.fillStyle='#241628cc';ctx.fillRect(248,26,464,12);
+ ctx.strokeStyle='#f7c9c5';ctx.strokeRect(248,26,464,12);
+ ctx.fillStyle='#f4b2c1';ctx.fillRect(250,28,460*Math.max(0,b.hp/b.max),8);
+ glyph(stage===1?'BOSS // SAKURA WRAITH':'BOSS // TWILIGHT EMPRESS',480,16,12,'#ffe2d5');
+}
+for(const s of shots){glyph('│',s.x,s.y,23,'#fff3d1');glyph('·',s.x,s.y+8,15,'#ffc6b6')}
+for(const b of bullets){glyph(b.style==='*'?'<*>':b.style==='o'?'(o)':'<+>',b.x,b.y,b.r*2+4,b.c);}
+for(const r of rings){ctx.strokeStyle=`rgba(255,220,190,${r.life*.8})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke()}
+for(const p of particles){ctx.globalAlpha=Math.min(1,p.life*2);glyph(p.ch,p.x,p.y,17,p.c)}ctx.globalAlpha=1;
+if(state==='play' || state==='paused'){if(pl.inv<=0||Math.floor(time*10)%2===0){glyph(' /\\ ',pl.x,pl.y-24,21,'#ffe9cd');glyph('<[+]>',pl.x,pl.y-7,23,'#fce4d2');glyph(' /||\\ ',pl.x,pl.y+13,19,'#ffc0c7');glyph('  vv  ',pl.x,pl.y+29,18,'#fef0cb')}let focus=keys.Shift||touch.focus;if(focus){ctx.beginPath();ctx.arc(pl.x,pl.y,5,0,7);ctx.strokeStyle='#fff8e1';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(pl.x,pl.y,27,0,7);ctx.strokeStyle='#f4b3cb66';ctx.stroke()}}
+if(spellTime>0&&boss){
+ const a=Math.min(1,spellTime,3.7-spellTime+.25);
+ ctx.globalAlpha=Math.max(0,a);
+ ctx.fillStyle='#160d28df';ctx.fillRect(0,206,W,110);
+ ctx.fillStyle='#f7afca';ctx.fillRect(145,207,670,1);
+ glyph('— SPELL CARD DECLARATION —',480,227,14,'#d8a6bd');
+ glyph(spellName,480,265,28,'#ffebd7');
+ glyph(stage===1?'01 / SAKURA':'02 / TWILIGHT',480,295,12,'#c9b1c9');
+ ctx.globalAlpha=1;
+ }
+if(bannerTime>0){ctx.globalAlpha=Math.min(1,bannerTime,3-bannerTime+.4);ctx.fillStyle='#180e29b7';ctx.fillRect(0,265,W,78);glyph(banner,480,303,29,'#ffe3d7');ctx.globalAlpha=1}if(flash>0){ctx.fillStyle=`rgba(255,231,210,${flash*.26})`;ctx.fillRect(0,0,W,H)}ctx.restore();if(state==='paused'){ctx.fillStyle='#0b0919b8';ctx.fillRect(0,0,W,H);glyph('— PAUSED —',480,280,34,'#ffe4cc');glyph('P / ESC 继续',480,320,16,'#dab1c2')}
+// integrated HUD for phone
+if(innerWidth<901){ctx.fillStyle='#100a1d88';ctx.fillRect(0,0,W,32);ctx.font='16px monospace';ctx.fillStyle='#f6d9d0';ctx.textAlign='left';ctx.fillText('♥ '+lives+'   ✧ '+bombs+'   '+String(score).padStart(8,'0'),15,20);ctx.textAlign='right';ctx.fillText('STAGE '+stage,945,20)} }
+function loop(ms){let dt=Math.min(.032,(ms-last)/1000||.016);last=ms;step(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+function togglePause(){if(state==='play')state='paused';else if(state==='paused')state='play'}$('start').onclick=reset;$('pause').onclick=togglePause;window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();if(!keys[e.code]){if(['KeyX','KeyC'].includes(e.code))useBomb();if(['KeyP','Escape'].includes(e.code))togglePause();if(e.code==='Enter'&&state==='menu')reset();if(e.code==='Enter'&&state==='end')reset()}keys[e.code]=true});window.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>{if(state==='play')togglePause()});function coord(e){let b=cv.getBoundingClientRect(),scale=Math.min(b.width/W,b.height/H),left=b.left+(b.width-W*scale)/2,top=b.top+(b.height-H*scale)/2;return{x:clamp((e.clientX-left)/scale,15,W-15),y:clamp((e.clientY-top)/scale,35,H-15)}}cv.addEventListener('pointerdown',e=>{if(state==='play'){touch.on=true;let p=coord(e);touch.x=p.x;touch.y=p.y;cv.setPointerCapture(e.pointerId)}});cv.addEventListener('pointermove',e=>{if(touch.on){let p=coord(e);touch.x=p.x;touch.y=p.y}});cv.addEventListener('pointerup',()=>touch.on=false);cv.addEventListener('pointercancel',()=>touch.on=false);const focusEl=$('focusTouch');focusEl.addEventListener('pointerdown',e=>{e.preventDefault();touch.focus=true});['pointerup','pointercancel','pointerleave'].forEach(k=>focusEl.addEventListener(k,()=>touch.focus=false));$('bombTouch').addEventListener('pointerdown',e=>{e.preventDefault();useBomb()});updateUI();})();
+</script></body></html>
